@@ -81,6 +81,17 @@ export const commentApi = {
     request<{ message: string }>(`/comments/${id}`, { method: 'DELETE' }),
 };
 
+// Admin
+export const adminApi = {
+  stats: () => request<AdminStats>('/admin/stats'),
+  users: () => request<{ users: AdminUser[] }>('/admin/users'),
+  posts: () => request<{ posts: AdminPost[] }>('/admin/posts'),
+  deletePost: (id: number) =>
+    request<{ message: string }>(`/admin/posts/${id}`, { method: 'DELETE' }),
+  deleteComment: (id: number) =>
+    request<{ message: string }>(`/admin/comments/${id}`, { method: 'DELETE' }),
+};
+
 // Types
 export interface User {
   id: number; username: string; email: string;
@@ -124,4 +135,21 @@ export interface CreatePostData {
   title: string; content: string; summary?: string;
   coverImage?: string; categoryId?: number;
   tagIds?: number[]; published?: boolean;
+}
+
+export interface AdminStats {
+  postCount: number; userCount: number; commentCount: number;
+  publishedCount: number; totalViews: number;
+}
+
+export interface AdminUser extends User {
+  postCount: number; commentCount: number; createdAt: string;
+}
+
+export interface AdminPost {
+  id: number; title: string; slug: string; published: boolean;
+  viewCount: number; createdAt: string;
+  author: { id: number; username: string };
+  category: { id: number; name: string } | null;
+  commentCount: number;
 }

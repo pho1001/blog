@@ -26,6 +26,9 @@ export default function Navbar() {
           {user ? (
             <>
               <Link to="/editor" className="text-gray-600 hover:text-blue-600 transition-colors">写文章</Link>
+              {user.role === 'admin' && (
+                <Link to="/admin" className="text-gray-600 hover:text-blue-600 transition-colors">管理</Link>
+              )}
               <span className="text-gray-400">{user.username}</span>
               <button onClick={handleLogout} className="text-gray-500 hover:text-red-600 transition-colors">退出</button>
             </>
@@ -54,6 +57,9 @@ export default function Navbar() {
           {user ? (
             <>
               <Link to="/editor" onClick={() => setMenuOpen(false)} className="block text-gray-600">写文章</Link>
+              {user.role === 'admin' && (
+                <Link to="/admin" onClick={() => setMenuOpen(false)} className="block text-gray-600">管理后台</Link>
+              )}
               <span className="block text-gray-400">{user.username}</span>
               <button onClick={handleLogout} className="block text-gray-500">退出</button>
             </>

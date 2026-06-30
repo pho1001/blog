@@ -6,6 +6,7 @@ import { postRouter } from './routes/posts';
 import { categoryRouter } from './routes/categories';
 import { tagRouter } from './routes/tags';
 import { commentRouter } from './routes/comments';
+import { adminRouter } from './routes/admin';
 import { errorHandler } from './middleware/errorHandler';
 
 const app = express();
@@ -20,6 +21,7 @@ app.use('/api/posts', postRouter);
 app.use('/api/categories', categoryRouter);
 app.use('/api/tags', tagRouter);
 app.use('/api/comments', commentRouter);
+app.use('/api/admin', adminRouter);
 
 // 生产环境：提供前端构建文件
 if (isProduction) {
