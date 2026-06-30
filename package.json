@@ -9,7 +9,7 @@
     "install:all": "npm install && cd server && npm install && cd ../client && npm install",
     "postinstall": "cd server && npm install && cd ../client && npm install",
     "build": "cd server && npx prisma generate && npm run build && cd ../client && npm run build",
-    "start": "cd server && npx prisma migrate deploy && npm start"
+    "start": "cd server && npx prisma migrate deploy && node dist/seed.js && npm start"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
