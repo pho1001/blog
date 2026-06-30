@@ -1,4 +1,4 @@
-import { Router, Response } from 'express';
+import { Router, Response, NextFunction } from 'express';
 import { body, validationResult } from 'express-validator';
 import prisma from '../lib/prisma';
 import { authRequired, AuthRequest } from '../middleware/auth';
@@ -16,7 +16,7 @@ function validate(req: AuthRequest, res: Response): boolean {
 }
 
 // GET /api/tags - 获取所有标签
-tagRouter.get('/', async (_req, res: Response, next) => {
+tagRouter.get('/', async (_req, res: Response, next: NextFunction) => {
   try {
     const tags = await prisma.tag.findMany({
       include: {
@@ -42,7 +42,7 @@ tagRouter.post(
   '/',
   authRequired,
   [body('name').trim().isLength({ min: 1, max: 50 }).escape()],
-  async (req: AuthRequest, res: Response, next) => {
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       if (!validate(req, res)) return;
       const name = req.body.name.trim();
@@ -65,7 +65,7 @@ tagRouter.post(
 );
 
 // DELETE /api/tags/:id
-tagRouter.delete('/:id', authRequired, async (req: AuthRequest, res: Response, next) => {
+tagRouter.delete('/:id', authRequired, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const id = parseInt(req.params.id);
     const tag = await prisma.tag.findUnique({ where: { id } });

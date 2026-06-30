@@ -1,4 +1,4 @@
-import { Router, Response } from 'express';
+import { Router, Response, NextFunction } from 'express';
 import { body, query, validationResult } from 'express-validator';
 import prisma from '../lib/prisma';
 import { authRequired, optionalAuth, AuthRequest } from '../middleware/auth';
@@ -51,7 +51,7 @@ postRouter.get(
     query('tag').optional().isString(),
     query('search').optional().isString(),
   ],
-  async (req: AuthRequest, res: Response, next) => {
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       if (!validate(req, res)) return;
       const page = parseInt(req.query.page as string) || 1;
@@ -100,7 +100,7 @@ postRouter.get(
 );
 
 // GET /api/posts/:slug - 文章详情（公开）
-postRouter.get('/:slug', optionalAuth, async (req: AuthRequest, res: Response, next) => {
+postRouter.get('/:slug', optionalAuth, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const post = await prisma.post.update({
       where: { slug: req.params.slug },
@@ -140,7 +140,7 @@ postRouter.post(
     body('tagIds').optional().isArray(),
     body('published').optional().isBoolean(),
   ],
-  async (req: AuthRequest, res: Response, next) => {
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       if (!validate(req, res)) return;
       const { title, content, summary, coverImage, categoryId, tagIds, published } = req.body;
@@ -187,7 +187,7 @@ postRouter.put(
     body('tagIds').optional().isArray(),
     body('published').optional().isBoolean(),
   ],
-  async (req: AuthRequest, res: Response, next) => {
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       if (!validate(req, res)) return;
       const postId = parseInt(req.params.id);
@@ -228,7 +228,7 @@ postRouter.put(
 );
 
 // DELETE /api/posts/:id - 删除文章
-postRouter.delete('/:id', authRequired, async (req: AuthRequest, res: Response, next) => {
+postRouter.delete('/:id', authRequired, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const postId = parseInt(req.params.id);
     const post = await prisma.post.findUnique({ where: { id: postId } });

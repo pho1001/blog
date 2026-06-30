@@ -1,4 +1,4 @@
-import { Router, Response } from 'express';
+import { Router, Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
 import { body, validationResult } from 'express-validator';
 import prisma from '../lib/prisma';
@@ -24,7 +24,7 @@ authRouter.post(
     body('email').isEmail().normalizeEmail(),
     body('password').isLength({ min: 6, max: 100 }),
   ],
-  async (req: AuthRequest, res: Response, next) => {
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       if (!validate(req, res)) return;
       const { username, email, password } = req.body;
@@ -59,7 +59,7 @@ authRouter.post(
     body('email').isEmail().normalizeEmail(),
     body('password').notEmpty(),
   ],
-  async (req: AuthRequest, res: Response, next) => {
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       if (!validate(req, res)) return;
       const { email, password } = req.body;
@@ -86,7 +86,7 @@ authRouter.post(
 );
 
 // GET /api/auth/me
-authRouter.get('/me', authRequired, async (req: AuthRequest, res: Response, next) => {
+authRouter.get('/me', authRequired, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const user = await prisma.user.findUnique({
       where: { id: req.userId },

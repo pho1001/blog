@@ -1,4 +1,4 @@
-import { Router, Response } from 'express';
+import { Router, Response, NextFunction } from 'express';
 import { body, validationResult } from 'express-validator';
 import prisma from '../lib/prisma';
 import { authRequired, AuthRequest } from '../middleware/auth';
@@ -16,7 +16,7 @@ function validate(req: AuthRequest, res: Response): boolean {
 }
 
 // GET /api/categories - 获取所有分类
-categoryRouter.get('/', async (_req, res: Response, next) => {
+categoryRouter.get('/', async (_req, res: Response, next: NextFunction) => {
   try {
     const categories = await prisma.category.findMany({
       include: { _count: { select: { posts: { where: { published: true } } } } },
@@ -40,7 +40,7 @@ categoryRouter.post(
   '/',
   authRequired,
   [body('name').trim().isLength({ min: 1, max: 50 }).escape()],
-  async (req: AuthRequest, res: Response, next) => {
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       if (!validate(req, res)) return;
       const name = req.body.name.trim();
@@ -63,7 +63,7 @@ categoryRouter.post(
 );
 
 // DELETE /api/categories/:id
-categoryRouter.delete('/:id', authRequired, async (req: AuthRequest, res: Response, next) => {
+categoryRouter.delete('/:id', authRequired, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const id = parseInt(req.params.id);
     const category = await prisma.category.findUnique({ where: { id } });

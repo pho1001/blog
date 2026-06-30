@@ -9,7 +9,7 @@ import { commentRouter } from './routes/comments';
 import { errorHandler } from './middleware/errorHandler';
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = Number(process.env.PORT) || 3001;
 const isProduction = process.env.NODE_ENV === 'production';
 
 app.use(cors({ origin: true, credentials: true }));

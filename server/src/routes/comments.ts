@@ -1,4 +1,4 @@
-import { Router, Response } from 'express';
+import { Router, Response, NextFunction } from 'express';
 import { body, validationResult } from 'express-validator';
 import prisma from '../lib/prisma';
 import { authRequired, optionalAuth, AuthRequest } from '../middleware/auth';
@@ -25,7 +25,7 @@ const commentSelect = {
 };
 
 // GET /api/comments/post/:postId - 获取文章评论
-commentRouter.get('/post/:postId', async (req, res: Response, next) => {
+commentRouter.get('/post/:postId', async (req, res: Response, next: NextFunction) => {
   try {
     const postId = parseInt(req.params.postId);
     const comments = await prisma.comment.findMany({
@@ -50,7 +50,7 @@ commentRouter.post(
   '/',
   optionalAuth,
   [body('content').trim().isLength({ min: 1, max: 2000 }).escape(), body('postId').isInt(), body('parentId').optional().isInt()],
-  async (req: AuthRequest, res: Response, next) => {
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       if (!validate(req, res)) return;
       if (!req.userId) throw new AppError('请先登录再评论', 401);
@@ -78,7 +78,7 @@ commentRouter.post(
 );
 
 // DELETE /api/comments/:id - 删除评论
-commentRouter.delete('/:id', authRequired, async (req: AuthRequest, res: Response, next) => {
+commentRouter.delete('/:id', authRequired, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const id = parseInt(req.params.id);
     const comment = await prisma.comment.findUnique({ where: { id } });
