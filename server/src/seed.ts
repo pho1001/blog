@@ -84,16 +84,19 @@ async function seed() {
     },
   });
 
-  // Attach tags
-  const jsTag = await prisma.tag.findUnique({ where: { slug: 'javascript' } });
-  const reactTag = await prisma.tag.findUnique({ where: { slug: 'react' } });
-  if (jsTag && reactTag) {
-    await prisma.postTag.createMany({
-      data: [
-        { postId: samplePost.id, tagId: jsTag.id },
-        { postId: samplePost.id, tagId: reactTag.id },
-      ],
-    });
+  // Attach tags (only if not already attached)
+  const existingTags = await prisma.postTag.findMany({ where: { postId: samplePost.id } });
+  if (existingTags.length === 0) {
+    const jsTag = await prisma.tag.findUnique({ where: { slug: 'javascript' } });
+    const reactTag = await prisma.tag.findUnique({ where: { slug: 'react' } });
+    if (jsTag && reactTag) {
+      await prisma.postTag.createMany({
+        data: [
+          { postId: samplePost.id, tagId: jsTag.id },
+          { postId: samplePost.id, tagId: reactTag.id },
+        ],
+      });
+    }
   }
 
   console.log('Seed completed!');
